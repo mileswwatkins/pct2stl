@@ -39,55 +39,21 @@ ogr2ogr \
             SELECT ST_UNARYUNION(ST_COLLECT(geometry)) AS geometry
             FROM PacificCrestTrail
         )
-        SELECT ST_BUFFER(geometry, 25000)
+        SELECT ST_BUFFER(geometry, 35000)
         FROM \"pct-unioned\"
-    "
-
-# This doesn't actually use the `PacificCrestTrail.shp` file, but
-# _an_ input file is needed for any `ogr2ogr` invocation. Also,
-# the "right" way to do this is with the `BuildCircleMbr` SpatiaLite
-# function, but that is currently resulting in rectangles instead.
-ogr2ogr \
-    data/pct-terminus-holes-mask.shp \
-    data/PacificCrestTrail.shp \
-    -a_srs EPSG:4326 \
-    -dialect sqlite \
-    -sql "
-        SELECT ST_DIFFERENCE(
-            ST_POLYGONFROMTEXT(
-                'POLYGON((
-                    -125.0011 24.9493,
-                    -125.0011 49.5904,
-                    -66.9326 49.5904,
-                    -66.9326 24.9493,
-                    -125.0011 24.9493
-                ))'
-            ),
-            ST_UNION(
-                BUFFER(ST_POINT(-120.799, 49.000), 0.1),
-                BUFFER(ST_POINT(-116.467, 32.589), 0.1)
-            )
-        ) AS geometry
     "
 
 if [ -f data/pct-dem-trimmed.tif ]; then
     rm data/pct-dem-trimmed.tif
 fi
+# Unfortunately, the nodata value isn't respected by DEMto3D
 gdalwarp \
     -cutline data/pct-buffered.shp \
     -cl pct-buffered \
     -crop_to_cutline \
+    -dstnodata 0 \
     data/pct-dem.tif \
     data/pct-dem-trimmed.tif
-gdalwarp \
-    -cutline data/pct-terminus-holes-mask.shp \
-    -cl pct-terminus-holes-mask \
-    -crop_to_cutline \
-    data/pct-dem-trimmed.tif \
-    data/pct-dem-trimmed-holed.tif
-gdal_edit.py \
-    -a_nodata 0 \
-    data/pct-dem-trimmed-holed.tif
 # TO DO: Trim this very large bounding box down to just the area
 # _without_ nodata
 # TO DO: Find a way to slice off the bottom of the QGIS-generated
