@@ -26,6 +26,6 @@ Place both of these downloaded TIF files into the `data` directory.
 1. Using the DEMto3D QGIS plugin, manually generate an STL file from the `pct-dem-trimmed.tif` file
      - Suggested settings for the plugin can be found [here](https://edutechwiki.unige.ch/en/3D_printing_of_digital_elevation_models_with_QGIS#Procedure_for_using_DEMto3D)
      - If using Shapeways for printing the final output in metal, note that they have [a maximum size of 89 x 89 x 100 mm](https://www.shapeways.com/materials/bronze)
-1. Execute the `blender-simplifications.py` script using your Blender executable; eg, `blender --python blender-simplifications.py`
+1. Execute the `blender-simplifications.py` script using your Blender executable; eg, `blender --background --python blender-simplifications.py`
     - If `blender` isn't installed as a shell command, you'll instead need to point to your Blender executable
 1. Submit the final STL file to a 3D metal printing service. At time of writing, this would cost about $20 at Shapeways.
