@@ -4,11 +4,7 @@ set -e
 
 mkdir -p data
 
-# Manually download GeoTIFF DEMs from https://earthexplorer.usgs.gov
-# - Washington through Redding, CA is in entity `GT30W140N90`
-# - The remainder of California is in entity `GT30W140N40`
-# Place both of these files in the `data` directory
-echo "Did you manually download the GeoTIFF DEMs first?"
+echo "Did you already manually download the GeoTIFF DEMs, to the \`data\` directory? See \`README.md\` for details."
 read -r REPLY
 
 gdal_merge.py \
@@ -54,13 +50,7 @@ gdalwarp \
     -dstnodata 0 \
     data/pct-dem.tif \
     data/pct-dem-trimmed.tif
-# TO DO: Trim this very large bounding box down to just the area
-# _without_ nodata
 # TO DO: Find a way to slice off the bottom of the QGIS-generated
 # STL polygon
 
-# Suggested settings for DEMto3D:
-# https://edutechwiki.unige.ch/en/3D_printing_of_digital_elevation_models_with_QGIS#Procedure_for_using_DEMto3D
-# Note that Shapeways has a maximum size for metal printing of
-# 89 × 89 × 100 mm; see, eg, https://www.shapeways.com/materials/bronze
-echo "Now manually use the DEMto3D QGIS plugin to create an STL file"
+echo "Now manually use the DEMto3D QGIS plugin to create an STL file. See \`README.md\` for details."
