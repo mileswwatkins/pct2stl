@@ -5,7 +5,7 @@ import os
 input_stl_name = 'pct-dem-trimmed_model-6'
 bpy.ops.import_mesh.stl(filepath=os.path.join('data', f'{input_stl_name}.stl'))
 
-pct_mesh = bpy.data.meshes[input_stl_name]
+pct_mesh = bpy.data.meshes[-1]
 pct_bmesh = bmesh.new()
 pct_bmesh.from_mesh(pct_mesh)
 
@@ -23,13 +23,24 @@ for edge in origin_vertex.link_edges:
 
 epsilon = 0.01
 z_plane_to_slice_at = max_z_coordinate + epsilon
-print(z_plane_to_slice_at)
 
 # Select only the PCT mesh
 bpy.ops.object.select_all(action="DESELECT")
 # Need an object-type pointer instead of a mesh-type one
-pct_object = bpy.context.scene.objects[input_stl_name]
+pct_object = bpy.context.scene.objects[-1]
 pct_object.select_set(True)
+
+# Toggle edit mode
+bpy.ops.object.editmode_toggle()
+
+# Remove null values with bisect
+bpy.ops.mesh.bisect(
+	plane_co=(0.0,0.0,z_plane_to_slice_at),
+	plane_no=(0.0,0.0,1.0),
+	use_fill=True,
+	clear_inner=True,
+	clear_outer=False,
+)
 
 bpy.ops.export_mesh.stl(
     filepath=os.path.join('data', f'{input_stl_name}-simp.stl'),
