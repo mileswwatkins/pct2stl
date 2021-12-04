@@ -2,7 +2,7 @@ import bpy
 import bmesh
 import os
 
-input_stl_name = 'pct-dem-trimmed_model-6'
+input_stl_name = 'pct-dem-trimmed-stretched-model'
 bpy.ops.import_mesh.stl(filepath=os.path.join('data', f'{input_stl_name}.stl'))
 
 pct_mesh = bpy.data.meshes[-1]
@@ -51,7 +51,23 @@ bpy.ops.mesh.extrude_manifold(
         "value": (0, 0, -extrusion_amount)
     }
 )
+# Move the mesh so that it rests on the zero Z plane
 pct_object.location.z = pct_object.location.z - (max_z_coordinate - extrusion_amount) - epsilon
+
+# Add the rings to attach jewelry chain
+ring_z_coordinate = 0.5
+major_radius = 1.5
+minor_radius = 0.5
+bpy.ops.mesh.primitive_torus_add(
+    location=(38.0, 0, ring_z_coordinate),
+    major_radius=major_radius,
+    minor_radius=minor_radius
+)
+bpy.ops.mesh.primitive_torus_add(
+    location=(14.9, 88.9, ring_z_coordinate),
+    major_radius=major_radius,
+    minor_radius=minor_radius
+)
 
 bpy.ops.export_mesh.stl(
     filepath=os.path.join('data', f'{input_stl_name}-simp.stl'),
