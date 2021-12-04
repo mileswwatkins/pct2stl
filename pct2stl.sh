@@ -62,7 +62,7 @@ min_and_max=$(
 min=$(echo "$min_and_max" | head -n 1)
 max=$(echo "$min_and_max" | tail -n 1)
 gdal_translate \
-    -scale "$min" "$max" 100 1000 \
+    -scale "$min" "$max" 1000 10000 \
     data/pct-dem-trimmed.tif \
     data/pct-dem-trimmed-stretched.tif
 
