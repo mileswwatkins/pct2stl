@@ -42,7 +42,8 @@ ogr2ogr \
 if [ -f data/pct-dem-trimmed.tif ]; then
     rm data/pct-dem-trimmed.tif
 fi
-# Unfortunately, the nodata value isn't respected by DEMto3D
+# Unfortunately, the nodata value isn't respected by DEMto3D,
+# and is treated as zero height
 gdalwarp \
     -cutline data/pct-buffered.shp \
     -cl pct-buffered \
@@ -50,7 +51,20 @@ gdalwarp \
     -dstnodata 0 \
     data/pct-dem.tif \
     data/pct-dem-trimmed.tif
-# TO DO: Find a way to slice off the bottom of the QGIS-generated
-# STL polygon
+
+# The DEMto3D QGIS plugin does not work properly with
+# GeoTIFF elevations below sea level, so we'll standardize
+# the min and max "elevations" of the GeoTiff
+min_and_max=$(
+    gdalinfo -mm data/pct-dem-trimmed.tif \
+    | grep "Min/Max" \
+    | grep -oEi '[0-9\.-]+'
+)
+min=$(echo "$min_and_max" | head -n 1)
+max=$(echo "$min_and_max" | tail -n 1)
+gdal_translate \
+    -scale "$min" "$max" 100 1000 \
+    data/pct-dem-trimmed.tif \
+    data/pct-dem-trimmed-stretched.tif
 
 echo "Now manually use the DEMto3D QGIS plugin to create an STL file. See \`README.md\` for details."

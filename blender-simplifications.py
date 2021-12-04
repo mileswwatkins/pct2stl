@@ -24,7 +24,7 @@ for edge in origin_vertex.link_edges:
         [max_z_coordinate]
     )
 
-epsilon = 0.01
+epsilon = 0.001
 z_plane_to_slice_at = max_z_coordinate + epsilon
 pct_bmesh.clear()
 
@@ -47,7 +47,7 @@ bpy.ops.mesh.bisect(
 )
 bpy.ops.mesh.extrude_manifold(
     TRANSFORM_OT_translate={
-        "value": (0, 0, -2.0)
+        "value": (0, 0, -1.0)
     }
 )
 
