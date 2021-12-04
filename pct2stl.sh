@@ -13,12 +13,11 @@ gdal_merge.py \
     data/gt30w140n90.tif
 
 wget \
-    --quiet \
     --timestamping \
     --directory-prefix data \
     https://www.fs.usda.gov/Internet/FSE_DOCUMENTS/stelprdb5332131.zip
 unzip \
-    -oq \
+    -o \
     -d data \
     data/stelprdb5332131.zip
 
