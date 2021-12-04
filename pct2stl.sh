@@ -4,22 +4,27 @@ set -e
 
 mkdir -p data
 
-echo "Did you already manually download the GeoTIFF DEMs, to the \`data\` directory? See \`README.md\` for details."
-read -r REPLY
+# Check that the GeoTIFF DEMs have been downloaded
+if test -n "$(find ./data -maxdepth 1 -name 'gt*.tif' -print -quit)"; then
+    echo "Found at least one GeoTIFF DEM; make sure you've downloaded all of the ones you need!"
+else
+    echo "You need to first manually download the GeoTIFF DEMs, to the \`data\` directory. See \`README.md\` for details."
+    exit 1
+fi
 
 gdal_merge.py \
     -o data/pct-dem.tif \
-    data/gt30w140n40.tif \
-    data/gt30w140n90.tif
+    data/gt*.tif
 
 wget \
+    --quiet \
     --timestamping \
-    --directory-prefix data \
+    --output-document data/trail.zip \
     https://www.fs.usda.gov/Internet/FSE_DOCUMENTS/stelprdb5332131.zip
 unzip \
-    -o \
+    -oq \
     -d data \
-    data/stelprdb5332131.zip
+    data/trail.zip
 
 # For whatever reason, dissolving the geometry must take place
 # separately from the SpatiaLite buffering of the line geometry;
