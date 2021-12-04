@@ -36,6 +36,7 @@ pct_object.select_set(True)
 
 # Remove null area, and re-extrude the trail manifold
 # downwards
+extrusion_amount = 1.0
 bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.bisect(
     plane_co=(0, 0, z_plane_to_slice_at),
@@ -47,9 +48,10 @@ bpy.ops.mesh.bisect(
 )
 bpy.ops.mesh.extrude_manifold(
     TRANSFORM_OT_translate={
-        "value": (0, 0, -1.0)
+        "value": (0, 0, -extrusion_amount)
     }
 )
+pct_object.location.z = pct_object.location.z - (max_z_coordinate - extrusion_amount) - epsilon
 
 bpy.ops.export_mesh.stl(
     filepath=os.path.join('data', f'{input_stl_name}-simp.stl'),
