@@ -64,10 +64,24 @@ bpy.ops.mesh.primitive_torus_add(
     minor_radius=minor_radius
 )
 bpy.ops.mesh.primitive_torus_add(
-    location=(14.9, 88.9, ring_z_coordinate),
+    location=(17.2, 84.9, ring_z_coordinate),
     major_radius=major_radius,
     minor_radius=minor_radius
 )
+
+bpy.ops.object.mode_set(mode="OBJECT")
+bm = bmesh.new()
+bm.from_mesh(pct_object.data)
+bmesh.ops.dissolve_limit(
+    bm,
+    use_dissolve_boundaries=True,
+    angle_limit=0.01,
+    verts=bm.verts,
+    edges=bm.edges
+)
+bm.to_mesh(pct_mesh)
+pct_mesh.update()
+bm.clear()
 
 bpy.ops.export_mesh.stl(
     filepath=os.path.join('data', f'{input_stl_name}-simp.stl'),

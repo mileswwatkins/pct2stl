@@ -6,9 +6,9 @@ mkdir -p data
 
 # Check that the GeoTIFF DEMs have been downloaded
 if test -n "$(find ./data -maxdepth 1 -name 'gt*.tif' -print -quit)"; then
-    echo "Found at least one GeoTIFF DEM; make sure you've downloaded all of the ones you need!"
+    echo "Successfully found at least one GeoTIFF DEM. It's up to you to make sure _all_ GeoTIFF DEMs for your trail have been downloaded."
 else
-    echo "You need to first manually download the GeoTIFF DEMs, to the \`data\` directory. See \`README.md\` for details."
+    echo "Error: you must have already manually downloaded the GeoTIFF DEMs to the \`data\` directory. See \`README.md\` for details."
     exit 1
 fi
 
@@ -39,7 +39,7 @@ ogr2ogr \
             SELECT ST_UNARYUNION(ST_COLLECT(geometry)) AS geometry
             FROM PacificCrestTrail
         )
-        SELECT ST_BUFFER(geometry, 35000)
+        SELECT ST_BUFFER(geometry, 40000)
         FROM \"pct-unioned\"
     "
 
